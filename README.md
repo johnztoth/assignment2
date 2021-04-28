@@ -15,7 +15,7 @@ Output file is "gradient.txt"
 To run type "python snow.py" from python consule
 
 
-Assignment 2 Additional program:
+Assignment 2, Additional program:
 Read in an elevation file, calculate the direction of maximum gradient at each point. 
 Randomly rop a skier onto the mountain, the ski moves down the mountain, jumping if he 
 gets stuck in a small bowl.
