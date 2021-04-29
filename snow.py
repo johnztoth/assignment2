@@ -115,12 +115,13 @@ maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
 
 # Plot elevation
+matplotlib.pyplot.figure(1)
 matplotlib.pyplot.imshow(z)
 matplotlib.pyplot.title("ski area elevation")
 matplotlib.pyplot.colorbar(label='elevation (m)',shrink=0.75)
-matplotlib.pyplot.show()
 
 # Plot maximum gradient
+matplotlib.pyplot.figure(2)
 matplotlib.pyplot.imshow(maxgrad)
 matplotlib.pyplot.title("ski area gradient")
 matplotlib.pyplot.colorbar(label='maximum gradient',shrink=0.75)
