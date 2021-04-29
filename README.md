@@ -3,6 +3,7 @@
 John Toth GEOG5003M
 
 Assigment 2:
+
 Read in an elevation file, calculate the maximum gradient at each
 point and output a gradient file.
 
@@ -16,6 +17,7 @@ To run type> python snow.py
 
 
 Assignment 2, Additional program:
+
 Read in an elevation file, calculate the direction of maximum gradient at each point. 
 Randomly drop a skier onto the mountain, the ski moves down the mountain, jumping if he 
 gets stuck in a small bowl.
