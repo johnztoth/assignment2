@@ -1,7 +1,8 @@
 """
 Snow.py
 Read in the elevation file (snowslope.txt) provided for the exercise.
-Calculate maximum gradient at every point. 
+Calculate maximum gradient at every point, internal points and boundary points.
+Plot elevation and maximum gradient.
 Write the maximum gradient to an output file.
 """
 
@@ -9,100 +10,112 @@ import matplotlib.pyplot
 import numpy as np
 
 # Read snowslope.txt using numpy.loadtext, the file is read into a numpy.array
-elevation = np.loadtxt("snowslope.txt")
+z = np.loadtxt("snowslope.txt")    # elevation array
 
-nrows = elevation.shape[0]
-ncols = elevation.shape[1]
+nrows = z.shape[0]                 # size of array, number of rows
+ncols = z.shape[1]                 # size of array, number of columns
 
-maxgrad = np.zeros_like(elevation) # max gradient at each point
-grad = np.zeros(4)                 # temporary gradient array
+maxgrad = np.zeros_like(z)         # max gradient at each point
+grad = np.zeros(8)                 # temporary gradient array
 sqrt2 = np.sqrt(2)                 # distance between diagonal cells
 
-# calculate average gradient in each direction
+# for internal cells calculate absolute gradient in each direction
 # assuming first row is furthest north, as shown in the giff image provided
 for i in range(1,nrows-1):
     for j in range(1,ncols-1):
-        grad[0] = abs((elevation[i-1,j]-elevation[i+1,j])/2)              # n-s
-        grad[1] = abs((elevation[i-1,j+1]-elevation[i+1,j-1])/(2*sqrt2))  # ne-sw
-        grad[2] = abs((elevation[i,j+1]-elevation[i,j-1])/2 )             # e-w
-        grad[3] = abs((elevation[i-1,j-1]-elevation[i+1,j+1])/(2*sqrt2))  # nw-se
-        maxgrad[i,j] = np.amax(grad)      # maximum gradient 
+        grad[0] = abs((z[i-1,j]-z[i,j]))             # north
+        grad[1] = abs((z[i-1,j+1]-z[i,j])/sqrt2)     # northeast        
+        grad[2] = abs((z[i,j+1]-z[i,j]))             # east
+        grad[3] = abs((z[i+1,j+1]-z[i,j])/sqrt2)     # southeast        
+        grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+        grad[5] = abs((z[i+1,j-1]-z[i,j])/sqrt2)     # southwest      
+        grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+        grad[7] = abs((z[i-1,j-1]-z[i,j])/sqrt2)     # northwest 
+        maxgrad[i,j] = np.amax(grad)                 # maximum gradient 
 
-# for north boundary
+# for north boundary cells
 i=0
-for j in range(1,ncols-1):
-    grad[0] = abs((elevation[i,j]-elevation[i+1,j]))             # north-south
-    grad[1] = abs((elevation[i,j]-elevation[i+1,j-1])/(sqrt2))   # ne-sw
-    grad[2] = abs((elevation[i,j+1]-elevation[i,j-1])/2)         # east-west
-    grad[3] = abs((elevation[i,j]-elevation[i+1,j+1])/(sqrt2))   # nw-se
-    maxgrad[i,j] = np.amax(grad)         # maximum gradient
+grad = np.zeros(8)
+for j in range(1,ncols-1):        
+    grad[2] = abs((z[i,j+1]-z[i,j]))             # east
+    grad[3] = abs((z[i+1,j+1]-z[i,j])/sqrt2)     # southeast        
+    grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+    grad[5] = abs((z[i+1,j-1]-z[i,j])/sqrt2)     # southwest      
+    grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+    maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
-# for south boundary
+# for south boundary cells
 i=nrows-1
+grad = np.zeros(8)
 for j in range(1,ncols-1):
-    grad[0] = abs((elevation[i-1,j]-elevation[i,j]))             # north-south
-    grad[1] = abs((elevation[i-1,j+1]-elevation[i,j])/(sqrt2))   # ne-sw
-    grad[2] = abs((elevation[i,j+1]-elevation[i,j-1])/2)         # east-west
-    grad[3] = abs((elevation[i-1,j-1]-elevation[i,j])/(sqrt2))   # nw-se
-    maxgrad[i,j] = np.amax(grad)         # maximum gradient
+    grad[0] = abs((z[i-1,j]-z[i,j]))             # north
+    grad[1] = abs((z[i-1,j+1]-z[i,j])/sqrt2)     # northeast        
+    grad[2] = abs((z[i,j+1]-z[i,j]))             # east     
+    grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+    grad[7] = abs((z[i-1,j-1]-z[i,j])/sqrt2)     # northwest 
+    maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
-# for west boundary
+# for west boundary cells 
 j=0
+grad = np.zeros(8)
 for i in range(1,nrows-1):
-    grad[0] = abs((elevation[i-1,j]-elevation[i+1,j])/2)         # north-south
-    grad[1] = abs((elevation[i-1,j+1]-elevation[i,j])/(sqrt2))   # ne-sw
-    grad[2] = abs((elevation[i,j+1]-elevation[i,j]))             # east-west
-    grad[3] = abs((elevation[i,j]-elevation[i+1,j+1])/(sqrt2))   # nw-se
-    maxgrad[i,j] = np.amax(grad)         # maximum gradient
+    grad[0] = abs((z[i-1,j]-z[i,j]))             # north
+    grad[1] = abs((z[i-1,j+1]-z[i,j])/sqrt2)     # northeast        
+    grad[2] = abs((z[i,j+1]-z[i,j]))             # east
+    grad[3] = abs((z[i+1,j+1]-z[i,j])/sqrt2)     # southeast        
+    grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+    maxgrad[i,j] = np.amax(grad)                 # maximum gradient
     
-# for east boundary
+# for east boundary cells
 j=ncols-1
+grad = np.zeros(8)
 for i in range(1,nrows-1):
-    grad[0] = abs((elevation[i-1,j]-elevation[i+1,j])/2)         # north-south
-    grad[1] = abs((elevation[i,j]-elevation[i+1,j-1])/(sqrt2))   # ne-sw
-    grad[2] = abs((elevation[i,j]-elevation[i,j-1]))             # east-west
-    grad[3] = abs((elevation[i-1,j-1]-elevation[i,j])/(sqrt2))   # nw-se
-    maxgrad[i,j] = np.amax(grad)         # maximum gradient
+    grad[0] = abs((z[i-1,j]-z[i,j]))             # north        
+    grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+    grad[5] = abs((z[i+1,j-1]-z[i,j])/sqrt2)     # southwest      
+    grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+    grad[7] = abs((z[i-1,j-1]-z[i,j])/sqrt2)     # northwest 
+    maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
-# for north west corner
+# for north west corner cell
 i=0
 j=0
-grad[0] = abs((elevation[i,j]-elevation[i+1,j]))             # north-south
-grad[1] = 0                                                  # ne-sw
-grad[2] = abs((elevation[i,j+1]-elevation[i,j]))             # east-west
-grad[3] = abs((elevation[i,j]-elevation[i+1,j+1])/(sqrt2))   # nw-se
-maxgrad[i,j] = np.amax(grad)         # maximum gradient
+grad = np.zeros(8)
+grad[2] = abs((z[i,j+1]-z[i,j]))             # east
+grad[3] = abs((z[i+1,j+1]-z[i,j])/sqrt2)     # southeast        
+grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+maxgrad[i,j] = np.amax(grad)                 # maximum gradient 
 
-# for north east corner
+# for north east corner cell
 i=0
 j=ncols-1
-grad[0] = abs((elevation[i,j]-elevation[i+1,j]))             # north-south
-grad[1] = abs((elevation[i,j]-elevation[i+1,j-1])/(sqrt2))   # ne-sw
-grad[2] = abs((elevation[i,j]-elevation[i,j-1]))             # east-west
-grad[3] = 0                                                  # nw-se
-maxgrad[i,j] = np.amax(grad)         # maximum gradient
+grad = np.zeros(8)
+grad[4] = abs((z[i+1,j]-z[i,j]))             # south
+grad[5] = abs((z[i+1,j-1]-z[i,j])/sqrt2)     # southwest      
+grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
-# for south east corner
+# for south east corner cell
 i=nrows-1
 j=ncols-1
-grad[0] = abs((elevation[i-1,j]-elevation[i,j]))             # north-south
-grad[1] = 0                                                  # ne-sw
-grad[2] = abs((elevation[i,j]-elevation[i,j-1]))             # east-west
-grad[3] = abs((elevation[i-1,j-1]-elevation[i,j])/(sqrt2))   # nw-se
-maxgrad[i,j] = np.amax(grad)         # maximum gradient
+grad = np.zeros(8)
+grad[0] = abs((z[i-1,j]-z[i,j]))             # north
+grad[6] = abs((z[i,j-1]-z[i,j]))             # west
+grad[7] = abs((z[i-1,j-1]-z[i,j])/sqrt2)     # northwest 
+maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
-# for south west corner
+# for south west corner cell
 i=nrows-1
 j=0
-grad[0] = abs((elevation[i-1,j]-elevation[i,j]))             # north-south
-grad[1] = abs((elevation[i-1,j+1]-elevation[i,j])/(sqrt2))   # ne-sw
-grad[2] = abs((elevation[i,j+1]-elevation[i,j]))             # east-west
-grad[3] = 0                                                  # nw-se
-maxgrad[i,j] = np.amax(grad)         # maximum gradient
+grad = np.zeros(8)
+grad[0] = abs((z[i-1,j]-z[i,j]))             # north
+grad[1] = abs((z[i-1,j+1]-z[i,j])/sqrt2)     # northeast        
+grad[2] = abs((z[i,j+1]-z[i,j]))             # east       
+maxgrad[i,j] = np.amax(grad)                 # maximum gradient
 
 
 # Plot elevation
-matplotlib.pyplot.imshow(elevation)
+matplotlib.pyplot.imshow(z)
 matplotlib.pyplot.title("ski area elevation")
 matplotlib.pyplot.colorbar(label='elevation (m)',shrink=0.75)
 matplotlib.pyplot.show()
