@@ -3,8 +3,8 @@ Skier.py
     Read the elevation file snowslope.txt provided for the exercise.
     Smooth the elevation file.
     Calculate direction of maximum downhill gradient at every point.
-    Drop a skier at a random location and move the skier down the mountain
-    Output the smoothed elevation and the skiers path
+    Drop a skier at a random location and move the skier down the mountain.
+    Output the smoothed elevation and the skiers path.
 """
 
 import matplotlib.pyplot
@@ -18,8 +18,8 @@ nrows = z.shape[0]
 ncols = z.shape[1]
 
 smooth = np.copy(z)                             # elevation data will be smoothed
-direction = np.zeros_like(z, dtype = 'int16')     # direction of maximum gradient
-grad = np.zeros(8)                                     # temporary gradient array
+direction = np.zeros_like(z, dtype = 'int16')   # direction of maximum gradient
+grad = np.zeros(8)                              # temporary gradient array
 
 ds = 1.0 # assume distance between data points is 1 unit in both directions
 ds_sqrt = ds*np.sqrt(2) # distance between diagonal cells
@@ -30,7 +30,6 @@ for i in range(1,nrows-1):
         smooth[i,j]=(z[i,j]+z[i-1,j]+z[i-1,j+1]+z[i,j+1]+z[i+1,j+1] \
                      +z[i+1,j]+z[i+1,j-1]+z[i,j-1]+z[i-1,j-1])/9
 
-# calculate the gradient at each cell in 8 different directions
 # calculate direction of maximum downhill gradient
 # 0=north, 1=northeast, 2=east, 3=southest
 # 4=south, 5=southwest, 6=west, 7=northwest
@@ -53,7 +52,7 @@ for i in range(1,nrows-1):
         direction[i,j] = dir       
 
 # calculate ski run from random starting point
-steps = 10001                      # number of movement steps down the mountain
+steps = 10000                       # number of movement steps down the mountain
 x=np.zeros(steps, dtype = 'int16')  # skiers x location
 y=np.zeros(steps, dtype = 'int16')  # skiers y location
 
@@ -76,8 +75,8 @@ mov[5,1] = -1       # x movement for southwest step
 mov[7,0] = -1       # y movement for northwest step
 mov[7,1] = -1       # x movement for northwest step
 
-y[0] = random.randint(20,nrows-20)    # starting y position of skier
-x[0] = random.randint(20,ncols-20)    # starting x position of skier
+y[0] = random.randint(10,nrows-10)    # starting y position of skier
+x[0] = random.randint(10,ncols-10)    # starting x position of skier
 y[1] = y[0]
 x[1] = x[0]
 
@@ -86,7 +85,7 @@ jump =  3             # how far can the skier jump when he gets stuck in a hole
 # ski down the slope
 for i in range(2,steps):
     stepstaken +=1
-    if x[i-1] <= jump:               # dont ski off edge of model
+    if x[i-1] <= jump:               # dont ski or jump off edge of model
         break
     if x[i-1] >= ncols-jump-1:
         break
@@ -98,7 +97,6 @@ for i in range(2,steps):
     y[i] = y[i-1] + mov[q,0]      # move skier
     x[i] = x[i-1] + mov[q,1]
     if x[i-2] == x[i] or y[i-2] == y[i]:   # skier is stuck in hole, jump out
-       print("jump", i, x[i],y[i])
        x[i] = x[i] + random.randint(-jump,jump)
        y[i] = y[i] + random.randint(-jump,jump)
     
