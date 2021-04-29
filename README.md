@@ -12,7 +12,7 @@ Input file is "snowslope.txt". In the same directory.
 
 Output file is "gradient.txt"
 
-To run type "python snow.py" from python consule
+To run type> "python snow.py" from python consule
 
 
 Assignment 2, Additional program:
@@ -24,4 +24,4 @@ Main program is "skier.py"
 
 Input file is "snowslope.txt". In the same directory.
 
-To run type "python skier.py" from python consule
+To run type> "python skier.py" from python consule
