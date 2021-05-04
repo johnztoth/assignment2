@@ -30,7 +30,7 @@ for i in range(1,nrows-1):
         smooth[i,j]=(z[i,j]+z[i-1,j]+z[i-1,j+1]+z[i,j+1]+z[i+1,j+1] \
                      +z[i+1,j]+z[i+1,j-1]+z[i,j-1]+z[i-1,j-1])/9
 
-# calculate direction of maximum downhill gradient
+# calculate direction of maximum downhill gradient, ignore boundary cells
 # 0=north, 1=northeast, 2=east, 3=southest
 # 4=south, 5=southwest, 6=west, 7=northwest
 for i in range(1,nrows-1):

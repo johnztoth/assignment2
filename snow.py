@@ -2,7 +2,7 @@
 Snow.py
 Read in the elevation file (snowslope.txt) provided for the exercise.
 Calculate maximum gradient at every point, internal points and boundary points.
-Plot elevation and maximum gradient.
+Plot elevation and maximum gradient using matplotlib.
 Write the maximum gradient to an output file.
 """
 
@@ -15,11 +15,12 @@ z = np.loadtxt("snowslope.txt")    # elevation array
 nrows = z.shape[0]                 # size of array, number of rows
 ncols = z.shape[1]                 # size of array, number of columns
 
-maxgrad = np.zeros_like(z)         # max gradient at each point
+maxgrad = np.zeros_like(z)         # absolute max gradient at each point
 grad = np.zeros(8)                 # temporary gradient array
 sqrt2 = np.sqrt(2)                 # distance between diagonal cells
 
 # for internal cells calculate absolute gradient in each direction
+# elevation is in metres and cell separation is assumed to be 1 metre
 # assuming first row is furthest north, as shown in the giff image provided
 for i in range(1,nrows-1):
     for j in range(1,ncols-1):
@@ -31,7 +32,7 @@ for i in range(1,nrows-1):
         grad[5] = abs((z[i+1,j-1]-z[i,j])/sqrt2)     # southwest      
         grad[6] = abs((z[i,j-1]-z[i,j]))             # west
         grad[7] = abs((z[i-1,j-1]-z[i,j])/sqrt2)     # northwest 
-        maxgrad[i,j] = np.amax(grad)                 # maximum gradient 
+        maxgrad[i,j] = np.amax(grad)                 # absolute maximum gradient 
 
 # for north boundary cells
 i=0
